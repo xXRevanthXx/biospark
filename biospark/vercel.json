@@ -1,11 +1,3 @@
 {
-  "version": 2,
-  "functions": {
-    "api/generate.js": {
-      "runtime": "nodejs20.x"
-    }
-  },
-  "rewrites": [
-    { "source": "/api/generate", "destination": "/api/generate.js" }
-  ]
+  "version": 2
 }
