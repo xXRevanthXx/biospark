@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BioSpark — Free AI Bio & Caption Generator</title>
+<meta name="description" content="Generate stunning Instagram bios, LinkedIn profiles, captions and hashtags in seconds. 100% free, powered by AI.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<!-- ░░ REPLACE THIS WITH YOUR GOOGLE ADSENSE SCRIPT TAG ░░ -->
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+<style>
+:root {
+  --bg: #0b0b0e;
+  --surface: #141418;
+  --surface2: #1b1b21;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #eeeae3;
+  --muted: #7c7c8a;
+  --dim: #46464f;
+  --gold: #c9aa6f;
+  --gold2: #e4ca95;
+  --glow: rgba(201,170,111,0.13);
+  --green: #4db88a;
+  --red: #e05858;
+  --orange: #e8943a;
+  --r: 13px;
+  --rs: 8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 36px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;background:rgba(11,11,14,0.93);backdrop-filter:blur(14px);}
+.logo{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:var(--gold2);letter-spacing:-.3px;text-decoration:none;}
+.logo sub{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--muted);margin-left:5px;letter-spacing:.5px;font-style:normal;}
+.nav-pills{display:flex;align-items:center;gap:10px;}
+.pill-free{background:rgba(77,184,138,.13);color:var(--green);border:1px solid rgba(77,184,138,.28);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;}
+.pill-limit{background:rgba(201,170,111,.1);color:var(--gold);border:1px solid rgba(201,170,111,.25);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;cursor:default;}
+
+/* TOP AD BANNER */
+.ad-top{width:100%;background:var(--surface);border-bottom:1px solid var(--border);padding:10px;text-align:center;}
+.ad-top-inner{display:inline-block;border:1px dashed var(--border2);border-radius:var(--rs);padding:10px 48px;color:var(--dim);font-size:12px;min-width:728px;max-width:100%;}
+/* Replace .ad-top-inner with actual AdSense ins tag */
+
+/* HERO */
+.hero{text-align:center;padding:52px 20px 36px;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(201,170,111,.07) 0%,transparent 65%);}
+.hero-chip{display:inline-flex;align-items:center;gap:6px;background:var(--glow);color:var(--gold2);border:1px solid rgba(201,170,111,.22);font-size:12px;font-weight:500;padding:5px 16px;border-radius:20px;margin-bottom:20px;letter-spacing:.3px;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,54px);line-height:1.13;font-weight:700;letter-spacing:-.5px;margin-bottom:12px;}
+.hero h1 em{color:var(--gold);font-style:italic;}
+.hero p{color:var(--muted);font-size:15px;max-width:440px;margin:0 auto 16px;font-weight:300;}
+.hero-meta{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;}
+.hero-meta span{font-size:13px;color:var(--dim);}
+.hero-meta strong{color:var(--gold2);}
+
+/* USAGE COUNTER BAR */
+.usage-bar-wrap{max-width:900px;margin:20px auto 0;padding:0 20px;}
+.usage-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.usage-label{font-size:13px;color:var(--muted);flex-shrink:0;}
+.usage-dots{display:flex;gap:7px;}
+.dot{width:18px;height:18px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);transition:background .25s;}
+.dot.used{background:var(--gold);border-color:var(--gold);}
+.dot.all-used{background:var(--dim);border-color:var(--dim);}
+.usage-note{font-size:12px;color:var(--dim);margin-left:auto;}
+
+/* LAYOUT */
+.wrap{max-width:900px;margin:0 auto;padding:24px 20px 60px;}
+.grid{display:grid;grid-template-columns:1fr 270px;gap:22px;align-items:start;}
+@media(max-width:720px){.grid{grid-template-columns:1fr;}.sidebar{display:none;}}
+
+/* TABS */
+.tabs{display:flex;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:5px;margin-bottom:22px;overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:1;min-width:max-content;padding:8px 16px;border-radius:7px;border:none;background:transparent;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+.tab:hover{color:var(--text);}
+.tab.on{background:var(--surface2);color:var(--gold2);border:1px solid var(--border2);}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.card-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.icon-pill{width:36px;height:36px;border-radius:9px;background:var(--glow);border:1px solid rgba(201,170,111,.18);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.card-head h2{font-size:15px;font-weight:600;}
+.card-head p{font-size:12px;color:var(--muted);margin-top:1px;}
+.card-body{padding:20px 22px;}
+
+/* FORM */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.fg-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.fg-full{grid-column:1/-1;}
+@media(max-width:520px){.fg-grid{grid-template-columns:1fr;}}
+label{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.4px;text-transform:uppercase;}
+input,textarea,select{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:9px 13px;outline:none;transition:border-color .2s;width:100%;resize:none;}
+input::placeholder,textarea::placeholder{color:var(--dim);}
+input:focus,textarea:focus,select:focus{border-color:rgba(201,170,111,.45);}
+select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+select option{background:var(--surface2);}
+
+/* TONE PILLS */
+.tones{display:flex;gap:7px;flex-wrap:wrap;}
+.tp{padding:6px 14px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;transition:all .18s;font-family:'DM Sans',sans-serif;}
+.tp:hover{border-color:var(--gold);color:var(--text);}
+.tp.on{background:var(--glow);border-color:var(--gold);color:var(--gold2);}
+
+/* GENERATE BTN */
+.btn-gen{width:100%;padding:13px;background:var(--gold);color:#1a1206;border:none;border-radius:var(--rs);font-size:15px;font-weight:600;cursor:pointer;margin-top:18px;transition:background .2s,transform .1s,opacity .2s;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-gen:hover{background:var(--gold2);}
+.btn-gen:active{transform:scale(.99);}
+.btn-gen:disabled{opacity:.45;cursor:not-allowed;}
+
+/* RESULTS */
+.results{margin-top:20px;display:none;}
+.results.on{display:block;}
+.res-label{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.res-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.res-cards{display:flex;flex-direction:column;gap:12px;}
+.rc{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);overflow:hidden;}
+.rc-top{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--border);}
+.rv{font-size:11px;font-weight:600;background:var(--glow);color:var(--gold2);padding:3px 9px;border-radius:5px;}
+.copy{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:4px 11px;border-radius:6px;font-size:12px;cursor:pointer;transition:all .18s;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:4px;}
+.copy:hover{border-color:var(--gold);color:var(--gold2);}
+.copy.ok{color:var(--green);border-color:var(--green);}
+.rt{padding:13px 14px;font-size:14px;line-height:1.75;color:var(--text);white-space:pre-wrap;word-break:break-word;}
+.rcc{padding:4px 14px 9px;font-size:11px;color:var(--dim);text-align:right;}
+
+/* SPINNER */
+.spin-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;padding:32px 0;}
+.spin{width:34px;height:34px;border:3px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:sp .75s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.spin-msg{color:var(--muted);font-size:14px;}
+
+/* ERROR */
+.err{background:rgba(224,88,88,.1);border:1px solid rgba(224,88,88,.28);border-radius:var(--rs);padding:12px 14px;color:#f4a0a0;font-size:13px;margin-top:14px;display:none;}
+.err.on{display:block;}
+
+/* LIMIT WARNING */
+.limit-warn{background:rgba(232,148,58,.1);border:1px solid rgba(232,148,58,.3);border-radius:var(--rs);padding:14px;color:#f5bb7a;font-size:14px;text-align:center;margin-top:14px;display:none;}
+.limit-warn.on{display:block;}
+.limit-warn strong{display:block;margin-bottom:4px;font-size:15px;}
+
+/* SIDEBAR */
+.sidebar{display:flex;flex-direction:column;gap:16px;}
+.ad-box{background:var(--surface);border:1px dashed var(--border2);border-radius:var(--r);min-height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--dim);font-size:12px;text-align:center;padding:18px;}
+.ad-box strong{color:var(--muted);display:block;margin-bottom:4px;font-size:13px;}
+.ad-box2{min-height:160px;}
+.tips{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;}
+.tips h3{font-size:12px;font-weight:600;color:var(--gold2);margin-bottom:10px;letter-spacing:.3px;text-transform:uppercase;}
+.tips ul{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.tips li{font-size:12px;color:var(--muted);padding-left:14px;position:relative;}
+.tips li::before{content:'→';position:absolute;left:0;color:var(--gold);font-size:10px;top:2px;}
+
+/* HISTORY */
+.h-list{display:flex;flex-direction:column;gap:10px;}
+.h-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:13px 15px;cursor:pointer;transition:border-color .18s;}
+.h-item:hover{border-color:var(--border2);}
+.h-item h4{font-size:13px;color:var(--text);margin-bottom:3px;}
+.h-item p{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.h-item time{font-size:11px;color:var(--dim);display:block;margin-top:5px;}
+.empty{text-align:center;padding:32px;color:var(--dim);font-size:14px;}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:22px 36px;text-align:center;color:var(--dim);font-size:12px;}
+footer a{color:var(--gold);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="/">BioSpark <sub>AI</sub></a>
+  <div class="nav-pills">
+    <span class="pill-free">✦ Free Tool</span>
+    <span class="pill-limit" id="nav-limit">3 left today</span>
+  </div>
+</nav>
+
+<!-- TOP AD BANNER (728x90) -->
+<div class="ad-top">
+  <div class="ad-top-inner">
+    📢 <strong>Advertisement</strong> — Replace this div with your Google AdSense 728×90 leaderboard code
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-chip">✦ 100% Free · No Sign Up · AI-Powered</div>
+  <h1>Write <em>perfect bios</em> &<br>captions instantly</h1>
+  <p>For Instagram, LinkedIn, Twitter & more. 3 free AI generations every day.</p>
+  <div class="hero-meta">
+    <span><strong>3</strong> free uses/day</span>
+    <span><strong>5</strong> platforms</span>
+    <span><strong>0</strong> signup needed</span>
+    <span><strong>100%</strong> free forever</span>
+  </div>
+</div>
+
+<!-- USAGE COUNTER -->
+<div class="usage-bar-wrap">
+  <div class="usage-bar">
+    <span class="usage-label">Today's uses:</span>
+    <div class="usage-dots" id="usage-dots">
+      <div class="dot" id="d1"></div>
+      <div class="dot" id="d2"></div>
+      <div class="dot" id="d3"></div>
+    </div>
+    <span id="usage-text" style="font-size:13px;color:var(--muted);">3 generations remaining</span>
+    <span class="usage-note">Resets at midnight 🕛</span>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="wrap">
+  <div class="grid">
+
+    <!-- LEFT: MAIN CONTENT -->
+    <div>
+      <!-- TABS -->
+      <div class="tabs" role="tablist">
+        <button class="tab on" onclick="switchTab('bio',this)">✦ Bio Generator</button>
+        <button class="tab" onclick="switchTab('caption',this)">📸 Caption Writer</button>
+        <button class="tab" onclick="switchTab('hashtag',this)"># Hashtag Pack</button>
+        <button class="tab" onclick="switchTab('history',this)">🕑 History</button>
+      </div>
+
+      <!-- TAB: BIO -->
+      <div id="tab-bio">
+        <div class="card">
+          <div class="card-head">
+            <div class="icon-pill">✍️</div>
+            <div><h2>AI Bio Generator</h2><p>Fill in your details — get 3 unique bio versions</p></div>
+          </div>
+          <div class="card-body">
+            <div class="fg-grid">
+              <div class="fg"><label>Your Name</label><input id="b-name" placeholder="e.g. Priya Sharma" /></div>
+              <div class="fg"><label>Platform</label>
+                <select id="b-plat">
+                  <option>Instagram</option><option>LinkedIn</option>
+                  <option>Twitter / X</option><option>YouTube</option><option>TikTok</option>
+                </select>
+              </div>
+              <div class="fg"><label>Role / Profession</label><input id="b-role" placeholder="e.g. Food Blogger, Engineer" /></div>
+              <div class="fg"><label>Niche / Industry</label><input id="b-niche" placeholder="e.g. Travel, Tech, Fashion" /></div>
+              <div class="fg fg-full"><label>Key Highlights (optional)</label><textarea id="b-hi" rows="2" placeholder="e.g. 10K followers, 5 yrs experience, Featured in XYZ"></textarea></div>
+              <div class="fg"><label>Call to Action (optional)</label><input id="b-cta" placeholder="e.g. DM for collabs" /></div>
+              <div class="fg"><label>Emoji Style</label>
+                <select id="b-emoji">
+                  <option value="with emojis">With Emojis ✨</option>
+                  <option value="minimal emojis">Minimal Emojis</option>
+                  <option value="no emojis">No Emojis</option>
+                </select>
+              </div>
+            </div>
+            <div class="fg"><label>Tone</label>
+              <div class="tones" id="bio-tones">
+                <button class="tp on" onclick="pickTone(this,'bio')">Professional</button>
+                <button class="tp" onclick="pickTone(this,'bio')">Friendly</button>
+                <button class="tp" onclick="pickTone(this,'bio')">Bold & Confident</button>
+                <button class="tp" onclick="pickTone(this,'bio')">Quirky & Fun</button>
+                <button class="tp" onclick="pickTone(this,'bio')">Minimalist</button>
+              </div>
+            </div>
+            <button class="btn-gen" id="bio-btn" onclick="doGenerate('bio')">✦ Generate 3 Bio Versions</button>
+            <div class="limit-warn" id="bio-lim"><strong>🚫 Daily limit reached!</strong>You've used all 3 free generations today. Come back tomorrow — resets at midnight. 😊</div>
+            <div class="err" id="bio-err"></div>
+            <div class="results" id="bio-res"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: CAPTION -->
+      <div id="tab-caption" style="display:none">
+        <div class="card">
+          <div class="card-head">
+            <div class="icon-pill">📸</div>
+            <div><h2>Caption Writer</h2><p>Describe your photo — get scroll-stopping captions</p></div>
+          </div>
+          <div class="card-body">
+            <div class="fg-grid">
+              <div class="fg"><label>Platform</label>
+                <select id="c-plat"><option>Instagram</option><option>Facebook</option><option>LinkedIn</option><option>Twitter / X</option><option>TikTok</option></select>
+              </div>
+              <div class="fg"><label>Post Type</label>
+                <select id="c-type">
+                  <option>Personal / Lifestyle</option><option>Food & Restaurant</option>
+                  <option>Travel & Adventure</option><option>Business / Product</option>
+                  <option>Motivational / Quote</option><option>Fitness & Wellness</option><option>Fashion & Beauty</option>
+                </select>
+              </div>
+              <div class="fg fg-full"><label>Describe Your Photo / Post</label>
+                <textarea id="c-desc" rows="3" placeholder="e.g. Sunday biryani lunch at home with family in Hyderabad 🍛"></textarea>
+              </div>
+              <div class="fg"><label>Hashtags</label>
+                <select id="c-hash">
+                  <option value="yes, include 5-10 relevant hashtags at the end">Yes — 5–10 tags</option>
+                  <option value="yes, 2-3 hashtags only">Yes — 2–3 tags</option>
+                  <option value="no hashtags">No hashtags</option>
+                </select>
+              </div>
+              <div class="fg"><label>Length</label>
+                <select id="c-len">
+                  <option value="short (1-2 lines)">Short (1–2 lines)</option>
+                  <option value="medium (3-5 lines)" selected>Medium (3–5 lines)</option>
+                  <option value="long story-style (6-10 lines)">Long (story-style)</option>
+                </select>
+              </div>
+            </div>
+            <div class="fg"><label>Vibe</label>
+              <div class="tones" id="cap-tones">
+                <button class="tp on" onclick="pickTone(this,'cap')">Aesthetic ✨</button>
+                <button class="tp" onclick="pickTone(this,'cap')">Funny 😂</button>
+                <button class="tp" onclick="pickTone(this,'cap')">Emotional 💛</button>
+                <button class="tp" onclick="pickTone(this,'cap')">Inspirational</button>
+                <button class="tp" onclick="pickTone(this,'cap')">Sarcastic</button>
+              </div>
+            </div>
+            <button class="btn-gen" id="cap-btn" onclick="doGenerate('cap')">✦ Generate 3 Captions</button>
+            <div class="limit-warn" id="cap-lim"><strong>🚫 Daily limit reached!</strong>You've used all 3 free generations today. Come back tomorrow — resets at midnight. 😊</div>
+            <div class="err" id="cap-err"></div>
+            <div class="results" id="cap-res"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: HASHTAG -->
+      <div id="tab-hashtag" style="display:none">
+        <div class="card">
+          <div class="card-head">
+            <div class="icon-pill">#️⃣</div>
+            <div><h2>Hashtag Pack Generator</h2><p>30 targeted hashtags sorted by reach size</p></div>
+          </div>
+          <div class="card-body">
+            <div class="fg-grid">
+              <div class="fg"><label>Your Niche / Topic</label><input id="h-niche" placeholder="e.g. Hyderabad food blogger" /></div>
+              <div class="fg"><label>Platform</label>
+                <select id="h-plat"><option>Instagram</option><option>TikTok</option><option>YouTube Shorts</option><option>LinkedIn</option></select>
+              </div>
+              <div class="fg fg-full"><label>Specific Post Topic (optional)</label>
+                <input id="h-post" placeholder="e.g. Hyderabadi biryani recipe reel" />
+              </div>
+            </div>
+            <button class="btn-gen" id="hash-btn" onclick="doGenerate('hash')">✦ Generate Hashtag Pack</button>
+            <div class="limit-warn" id="hash-lim"><strong>🚫 Daily limit reached!</strong>You've used all 3 free generations today. Come back tomorrow — resets at midnight. 😊</div>
+            <div class="err" id="hash-err"></div>
+            <div class="results" id="hash-res"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: HISTORY -->
+      <div id="tab-history" style="display:none">
+        <div class="card">
+          <div class="card-head">
+            <div class="icon-pill">🕑</div>
+            <div><h2>Your History</h2><p>Last 20 generations — saved in your browser</p></div>
+          </div>
+          <div class="card-body" id="history-body">
+            <div class="empty">No generations yet. Start creating! ✦</div>
+          </div>
+        </div>
+      </div>
+    </div><!-- end left -->
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <!-- AD 300x250 -->
+      <div class="ad-box">
+        <strong>📢 Advertisement</strong>
+        <span>Google AdSense<br>300 × 250 Rectangle</span>
+        <span style="margin-top:8px;font-size:11px;color:var(--dim)">Replace with your<br>AdSense ins tag</span>
+      </div>
+
+      <div class="tips">
+        <h3>✦ Tips for Best Results</h3>
+        <ul>
+          <li>Be specific — mention your city, niche</li>
+          <li>Instagram bios: keep under 150 chars</li>
+          <li>LinkedIn: add numbers & achievements</li>
+          <li>Mix 3 hashtag sizes for best reach</li>
+          <li>Try all 3 versions, mix & match lines</li>
+        </ul>
+      </div>
+
+      <!-- AD 300x200 -->
+      <div class="ad-box ad-box2">
+        <strong>📢 Advertisement</strong>
+        <span>Google AdSense<br>300 × 200</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>BioSpark AI — Free Forever · <a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Contact</a></p>
+  <p style="margin-top:5px;">Powered by Claude AI · Made with ♥ in India</p>
+</footer>
+
+<script>
+// ── STATE ──
+const tones = { bio: 'Professional', cap: 'Aesthetic ✨' };
+let hist = JSON.parse(localStorage.getItem('bs_hist') || '[]');
+
+// Usage tracking (client-side display only — server enforces real limit)
+function getUsage() {
+  const today = new Date().toISOString().slice(0,10);
+  const stored = JSON.parse(localStorage.getItem('bs_usage') || '{}');
+  if (stored.date !== today) return { date: today, count: 0 };
+  return stored;
+}
+function incUsage() {
+  const u = getUsage(); u.count++;
+  localStorage.setItem('bs_usage', JSON.stringify(u));
+  renderUsage();
+}
+function renderUsage() {
+  const u = getUsage();
+  const rem = Math.max(0, 3 - u.count);
+  [1,2,3].forEach(i => {
+    const d = document.getElementById('d'+i);
+    if (i <= u.count) d.className = 'dot used';
+    else d.className = 'dot';
+  });
+  const txt = document.getElementById('usage-text');
+  const navLim = document.getElementById('nav-limit');
+  if (rem === 0) {
+    txt.textContent = 'No generations left today';
+    txt.style.color = 'var(--orange)';
+    navLim.textContent = '0 left today';
+    navLim.style.color = 'var(--orange)';
+  } else {
+    txt.textContent = `${rem} generation${rem===1?'':'s'} remaining`;
+    txt.style.color = '';
+    navLim.textContent = `${rem} left today`;
+    navLim.style.color = '';
+  }
+}
+renderUsage();
+
+// ── TABS ──
+function switchTab(name, btn) {
+  ['bio','caption','hashtag','history'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if (el) el.style.display = (t === name) ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  btn.classList.add('on');
+  if (name === 'history') renderHistory();
+}
+
+// ── TONE PILLS ──
+function pickTone(el, type) {
+  const c = document.getElementById(type === 'bio' ? 'bio-tones' : 'cap-tones');
+  c.querySelectorAll('.tp').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  tones[type] = el.textContent;
+}
+
+// ── BUILD PROMPTS ──
+function buildPrompt(type) {
+  if (type === 'bio') {
+    const name = document.getElementById('b-name').value.trim();
+    const plat = document.getElementById('b-plat').value;
+    const role = document.getElementById('b-role').value.trim();
+    const niche = document.getElementById('b-niche').value.trim();
+    const hi = document.getElementById('b-hi').value.trim();
+    const cta = document.getElementById('b-cta').value.trim();
+    const emoji = document.getElementById('b-emoji').value;
+    if (!role && !niche) return null;
+    return `You are an expert social media copywriter. Write 3 distinct ${plat} bio versions.
+Name: ${name||'Not given'} | Role: ${role||'N/A'} | Niche: ${niche||'N/A'}
+Highlights: ${hi||'None'} | CTA: ${cta||'None'} | Tone: ${tones.bio} | Emojis: ${emoji}
+Platform rules: ${plat==='Instagram'?'Max 150 chars, use line breaks':plat==='LinkedIn'?'Professional, up to 300 chars':plat==='Twitter / X'?'Max 160 chars, punchy':'Clear and engaging'}
+Label each: "Version 1:", "Version 2:", "Version 3:" — output ONLY the 3 versions, no extra text.`;
+  }
+  if (type === 'cap') {
+    const desc = document.getElementById('c-desc').value.trim();
+    if (!desc) return null;
+    return `You are a viral social media copywriter. Write 3 distinct ${document.getElementById('c-plat').value} captions.
+Post: ${desc} | Type: ${document.getElementById('c-type').value} | Vibe: ${tones.cap}
+Length: ${document.getElementById('c-len').value} | Hashtags: ${document.getElementById('c-hash').value}
+Each caption must have a different creative angle. Label: "Version 1:", "Version 2:", "Version 3:" — output ONLY the 3 captions.`;
+  }
+  if (type === 'hash') {
+    const niche = document.getElementById('h-niche').value.trim();
+    if (!niche) return null;
+    const post = document.getElementById('h-post').value.trim();
+    return `Generate a strategic hashtag pack for ${document.getElementById('h-plat').value}.
+Niche: ${niche}${post?' | Post: '+post:''}
+Output exactly 30 hashtags in 3 groups:
+🔥 HIGH REACH (10 tags, 1M+ posts):
+#tag1 #tag2 ... 
+🎯 MEDIUM REACH (10 tags, 100K–1M posts):
+#tag1 #tag2 ...
+💎 LOW COMPETITION — Best for growth (10 tags, under 100K posts):
+#tag1 #tag2 ...
+💡 Strategy tip: [1 sentence]`;
+  }
+}
+
+// ── MAIN GENERATE ──
+async function doGenerate(type) {
+  const prompt = buildPrompt(type);
+  if (!prompt) {
+    showErr(type, 'Please fill in the required fields.');
+    return;
+  }
+
+  const btn = document.getElementById(type==='bio'?'bio-btn':type==='cap'?'cap-btn':'hash-btn');
+  const resId = type==='bio'?'bio-res':type==='cap'?'cap-res':'hash-res';
+  const errId = type==='bio'?'bio-err':type==='cap'?'cap-err':'hash-err';
+  const limId = type==='bio'?'bio-lim':type==='cap'?'cap-lim':'hash-lim';
+
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+  document.getElementById(errId).className = 'err';
+  document.getElementById(limId).className = 'limit-warn';
+  showSpinner(resId);
+
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, type })
+    });
+    const data = await res.json();
+
+    if (res.status === 429 || data.limitReached) {
+      document.getElementById(resId).className = 'results';
+      document.getElementById(limId).className = 'limit-warn on';
+      // Mark all dots used in UI
+      [1,2,3].forEach(i => { document.getElementById('d'+i).className='dot used'; });
+      return;
+    }
+    if (!res.ok || data.error) throw new Error(data.error || 'Something went wrong.');
+
+    // Update usage display from server response
+    const u = getUsage();
+    u.count = data.usedToday || u.count + 1;
+    localStorage.setItem('bs_usage', JSON.stringify(u));
+    renderUsage();
+
+    const variants = parseVariants(data.result);
+    const label = type==='bio' ? `Bio – ${document.getElementById('b-plat').value}`
+                : type==='cap' ? `Caption – ${document.getElementById('c-desc').value.substring(0,35)}…`
+                : `Hashtags – ${document.getElementById('h-niche').value}`;
+    renderResults(resId, variants, label);
+    saveHist({ title: label, preview: variants[0], time: new Date().toLocaleString(), variants });
+
+  } catch(e) {
+    document.getElementById(resId).className = 'results';
+    showErr(type, e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = type==='bio'?'✦ Generate 3 Bio Versions':type==='cap'?'✦ Generate 3 Captions':'✦ Generate Hashtag Pack';
+  }
+}
+
+// ── HELPERS ──
+function parseVariants(text) {
+  const splits = text.split(/\n(?=Version\s*\d+[:\-])/i).filter(l=>l.trim());
+  if (splits.length >= 2) return splits.map(l=>l.replace(/^Version\s*\d+[:\-]\s*/i,'').trim()).filter(Boolean).slice(0,3);
+  const dashes = text.split(/\n---+\n/).map(s=>s.trim()).filter(Boolean);
+  if (dashes.length >= 2) return dashes.slice(0,3);
+  return [text.trim()];
+}
+
+function showSpinner(id) {
+  const el = document.getElementById(id);
+  el.className = 'results on';
+  el.innerHTML = `<div class="spin-wrap"><div class="spin"></div><p class="spin-msg">Claude AI is writing for you…</p></div>`;
+}
+
+function showErr(type, msg) {
+  const id = type==='bio'?'bio-err':type==='cap'?'cap-err':'hash-err';
+  const el = document.getElementById(id);
+  el.textContent = '✗ ' + msg;
+  el.className = 'err on';
+}
+
+function renderResults(id, variants, label) {
+  const wrap = document.getElementById(id);
+  wrap.className = 'results on';
+  wrap.innerHTML = `<div class="res-label">Generated Results</div><div class="res-cards"></div>`;
+  const rc = wrap.querySelector('.res-cards');
+  variants.forEach((text, i) => {
+    const d = document.createElement('div');
+    d.className = 'rc';
+    d.innerHTML = `
+      <div class="rc-top">
+        <span class="rv">Version ${i+1}</span>
+        <button class="copy" onclick="doCopy(this, ${JSON.stringify(encodeURIComponent(text))})">📋 Copy</button>
+      </div>
+      <div class="rt">${esc(text)}</div>
+      <div class="rcc">${text.length} characters</div>`;
+    rc.appendChild(d);
+  });
+}
+
+function doCopy(btn, enc) {
+  navigator.clipboard.writeText(decodeURIComponent(enc)).then(() => {
+    btn.textContent = '✓ Copied!'; btn.className = 'copy ok';
+    setTimeout(()=>{ btn.innerHTML='📋 Copy'; btn.className='copy'; }, 2000);
+  });
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── HISTORY ──
+function saveHist(item) {
+  hist.unshift(item);
+  if (hist.length > 20) hist = hist.slice(0,20);
+  localStorage.setItem('bs_hist', JSON.stringify(hist));
+}
+
+function renderHistory() {
+  const body = document.getElementById('history-body');
+  if (!hist.length) { body.innerHTML='<div class="empty">No generations yet. Start creating! ✦</div>'; return; }
+  body.innerHTML = `<div class="h-list">${hist.map((h,i)=>`
+    <div class="h-item" onclick="alert(${JSON.stringify((h.variants||[h.preview]).join('\n\n---\n\n'))})">
+      <h4>${esc(h.title)}</h4>
+      <p>${esc((h.preview||'').substring(0,90))}…</p>
+      <time>${h.time}</time>
+    </div>`).join('')}</div>`;
+}
+</script>
+</body>
+</html>
